@@ -5,46 +5,59 @@ import {
   Param,
   Patch,
   Post,
-  Req,
+  Body,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { Request } from 'supertest';
+import { UserService } from './user.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('user')
 export class UserController {
+  constructor(private userService: UserService) {}
   @Get()
   getUser() {
-    return {
-      user: 'clockwize',
-      email: 'clockwize@gmail.com',
-    };
+    return this.userService.get();
+    // return {
+    //   user: 'clockwize',
+    //   email: 'clockwize@gmail.com',
+    // };
   }
 
   @Post()
-  store(@Req() req: Request) {
-    return req;
+  store(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
+    // return req;
   }
 
   @Get('/:userId')
-  getUserDetail(@Param() params: { userId: number }) {
-    return {
-      params,
-      message: 'User Detail',
-    };
+  getUserDetail(@Param('userId', ParseIntPipe) userId: number) {
+    return this.userService.getDetail(userId);
+    // return {
+    //   params,
+    //   message: 'User Detail',
+    // };
   }
 
   @Delete('/:userId')
-  deleteUser(@Param() params: { userId: number }) {
-    return {
-      params,
-      message: 'User delete',
-    };
+  // deleteUser(@Param() params: { userId: number }) {
+  deleteUser(@Param('userId', ParseIntPipe) userId: number) {
+    return this.userService.delete(userId);
+    // return {
+    //   params,
+    //   message: 'User delete',
+    // };
   }
 
   @Patch('/:userId')
-  updateUser(@Param() params: { userId: number }) {
-    return {
-      params,
-      message: 'User update',
-    };
+  updateUser(
+    @Body() updateUserDto: UpdateUserDto,
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    return this.userService.update(updateUserDto, userId);
+    // return {
+    //   params,
+    //   message: 'User update',
+    // };
   }
 }
