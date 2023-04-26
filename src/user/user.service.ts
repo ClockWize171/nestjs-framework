@@ -21,27 +21,18 @@ export class UserService {
   }
 
   create(createUserDto: CreateUserDto) {
-    return createUserDto;
+    return this.userRepository.save(createUserDto);
   }
 
-  getDetail(userId: number) {
-    return {
-      userId,
-      message: 'User Detail',
-    };
+  getDetail(id: number) {
+    return this.userRepository.findOne({ where: { id } });
   }
 
   delete(userId: number) {
-    return {
-      userId,
-      message: 'User delete',
-    };
+    return this.userRepository.delete(userId);
   }
 
   update(updateUserDto: UpdateUserDto, userId: number) {
-    return {
-      body: updateUserDto,
-      params: userId,
-    };
+    return this.userRepository.update(userId, updateUserDto);
   }
 }
